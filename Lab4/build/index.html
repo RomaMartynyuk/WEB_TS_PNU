@@ -1,12 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="js/main.js" defer></script>
+    <title>Personal Platz - Фітнес Трекер</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Lab 4</h1>
+    <div class="app-container" id="app">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="#" id="homeLink">
+                    <div class="logo me-3">PP</div>
+                    <span class="fs-4 fw-bold">Personal Platz</span>
+                </a>
+                <ul class="nav nav-tabs bg-transparent border-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#" id="homeTabLink">Головна</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#" id="workoutTabLink">Тренування</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#" id="historyTabLink">Історія</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container flex-grow-1 py-4">
+            <!-- Home Page -->
+            <div id="homePage" class="page">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="workout-card p-5 text-center">
+                            <div class="logo mx-auto mb-4" style="width: 100px; height: 100px; font-size: 2rem;">PP</div>
+                            <h1 class="display-4 mb-4">Personal Platz</h1>
+                            <p class="lead mb-4">Ваш персональний фітнес-трекер для ефективних тренувань</p>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <button class="btn btn-primary btn-lg w-100" id="startWorkoutBtn">
+                                        <i class="fas fa-play me-2"></i>Розпочати тренування
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-outline-primary btn-lg w-100" id="viewHistoryBtn">
+                                        <i class="fas fa-history me-2"></i>Переглянути історію
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workout Page -->
+            <div id="workoutPage" class="page hidden">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="workout-card p-4 mb-4">
+                            <div class="text-center mb-4">
+                                <div class="logo mx-auto mb-3">PP</div>
+                                <input type="text" class="form-control form-control-lg text-center border-0 bg-transparent" 
+                                       id="sessionName" value="Назва сесії" style="font-size: 1.2rem; font-weight: bold;">
+                            </div>
+                            
+                            <div class="text-center mb-4">
+                                <div class="timer-display" id="workoutTimer">00:00:00</div>
+                                <small class="text-muted">Тривалість тренування</small>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button class="btn btn-danger btn-lg" id="finishWorkoutBtn">
+                                    <i class="fas fa-stop me-2"></i>Завершити
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-8">
+                        <div class="workout-card p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3>Вправи</h3>
+                                <button class="btn btn-success" id="addExerciseBtn">
+                                    <i class="fas fa-plus me-2"></i>Додати вправу
+                                </button>
+                            </div>
+                            
+                            <div id="exercisesList">
+                                <!-- Exercises will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Page -->
+            <div id="historyPage" class="page hidden">
+                <div class="workout-card p-4">
+                    <h3 class="mb-4">Історія тренувань</h3>
+                    <div id="historyList">
+                        <!-- History items will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Timer -->
+        <div class="floating-timer hidden" id="restTimer">
+            <div class="text-center">
+                <div class="fs-4 fw-bold" id="restTimerDisplay">00:00</div>
+                <small>Відпочинок</small>
+                <div class="mt-2">
+                    <button class="btn btn-sm btn-outline-light me-2" id="pauseTimerBtn">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-light" id="stopTimerBtn">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Add Button -->
+        <button class="btn btn-primary btn-lg rounded-circle floating-btn hidden" id="floatingAddBtn" style="width: 60px; height: 60px;">
+            <i class="fas fa-plus fs-4"></i>
+        </button>
+    </div>
+
+    <!-- Exercise Modal -->
+    <div class="modal fade" id="exerciseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Додати/Редагувати вправу</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="exerciseForm">
+                        <div class="mb-3">
+                            <label class="form-label">Назва вправи</label>
+                            <input type="text" class="form-control" id="exerciseName" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Підходи</label>
+                                <input type="number" class="form-control" id="exerciseSets" min="1" value="3">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Повтори</label>
+                                <input type="number" class="form-control" id="exerciseReps" min="1" value="10">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Вага (кг)</label>
+                                <input type="number" class="form-control" id="exerciseWeight" min="0" step="0.5" value="0">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="button" class="btn btn-primary" id="saveExerciseBtn">Зберегти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
