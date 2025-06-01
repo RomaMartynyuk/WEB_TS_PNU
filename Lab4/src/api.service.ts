@@ -2,7 +2,7 @@
 // Управління даними тренувань та локальним сховищем
 
 import { WorkoutSession, Exercise } from './types.js';
-import { generateId } from './utils.js';
+import { generateId, calculateExerciseVolume, calculateSessionVolume } from './utils.js';
 
 export class ApiService {
     private workoutSessions: WorkoutSession[] = [];
@@ -20,7 +20,8 @@ export class ApiService {
             date: new Date(),
             exercises: [],
             duration: 0,
-            isActive: true
+            isActive: true,
+            totalVolume: 0
         };
         
         this.currentSession = session;
@@ -32,6 +33,8 @@ export class ApiService {
             throw new Error('No active workout session');
         }
 
+        const volume = calculateExerciseVolume(sets, reps, weight);
+        
         const newExercise: Exercise = {
             id: generateId(),
             name: name,
@@ -39,10 +42,12 @@ export class ApiService {
             reps: reps,
             weight: weight,
             record: 0,
-            completed: false
+            completed: false,
+            volume: volume
         };
 
         this.currentSession.exercises.push(newExercise);
+        this.updateSessionVolume();
         return newExercise;
     }
 
@@ -52,11 +57,15 @@ export class ApiService {
         const exerciseIndex: number = this.currentSession.exercises.findIndex(ex => ex.id === exerciseId);
         if (exerciseIndex === -1) return null;
 
+        const volume = calculateExerciseVolume(sets, reps, weight);
+
         this.currentSession.exercises[exerciseIndex].name = name;
         this.currentSession.exercises[exerciseIndex].sets = sets;
         this.currentSession.exercises[exerciseIndex].reps = reps;
         this.currentSession.exercises[exerciseIndex].weight = weight;
+        this.currentSession.exercises[exerciseIndex].volume = volume;
 
+        this.updateSessionVolume();
         return this.currentSession.exercises[exerciseIndex];
     }
 
@@ -66,7 +75,11 @@ export class ApiService {
         const initialLength: number = this.currentSession.exercises.length;
         this.currentSession.exercises = this.currentSession.exercises.filter(ex => ex.id !== exerciseId);
         
-        return this.currentSession.exercises.length < initialLength;
+        if (this.currentSession.exercises.length < initialLength) {
+            this.updateSessionVolume();
+            return true;
+        }
+        return false;
     }
 
     public finishWorkoutSession(duration: number): void {
@@ -74,6 +87,7 @@ export class ApiService {
 
         this.currentSession.duration = duration;
         this.currentSession.isActive = false;
+        this.updateSessionVolume();
         this.workoutSessions.push(this.currentSession);
         this.saveToStorage();
         this.currentSession = null;
@@ -93,15 +107,31 @@ export class ApiService {
         }
     }
 
+    private updateSessionVolume(): void {
+        if (!this.currentSession) return;
+        
+        this.currentSession.totalVolume = calculateSessionVolume(this.currentSession.exercises);
+    }
+
     private loadFromStorage(): void {
         try {
             const stored: string | null = localStorage.getItem(this.storageKey);
             if (stored) {
                 const parsed = JSON.parse(stored);
-                this.workoutSessions = parsed.map((session: any) => ({
-                    ...session,
-                    date: new Date(session.date)
-                }));
+                this.workoutSessions = parsed.map((session: any) => {
+                    // Обчислюємо об'єм для старих сесій, якщо він відсутній
+                    const exercises = session.exercises.map((ex: any) => ({
+                        ...ex,
+                        volume: ex.volume || calculateExerciseVolume(ex.sets, ex.reps, ex.weight)
+                    }));
+                    
+                    return {
+                        ...session,
+                        date: new Date(session.date),
+                        exercises: exercises,
+                        totalVolume: session.totalVolume || calculateSessionVolume(exercises)
+                    };
+                });
             }
         } catch (error) {
             console.error('Error loading from storage:', error);

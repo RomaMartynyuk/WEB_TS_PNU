@@ -1,9 +1,10 @@
 // Personal Platz - Обробники подій
-// Налаштування всіх слухачів подій DOM
+// Налаштування всіх слухачів подій DOM з підтримкою розрахунку об'єму
 
 import { NavigationService } from './navigation.service.js';
 import { WorkoutController } from './workout.controller.js';
 import { ApiService } from './api.service.js';
+import { calculateExerciseVolume, formatVolume } from './utils.js';
 
 export class EventHandlers {
     constructor(
@@ -18,6 +19,7 @@ export class EventHandlers {
         this.setupWorkoutPageListeners();
         this.setupModalListeners();
         this.setupTimerListeners();
+        this.setupVolumeCalculation();
     }
 
     private setupNavigationListeners(): void {
@@ -91,6 +93,12 @@ export class EventHandlers {
         saveExerciseBtn?.addEventListener('click', () => {
             this.workoutController.saveExercise();
         });
+
+        // Додаємо слухач для показу/приховування модального вікна
+        const exerciseModal: HTMLElement | null = document.getElementById('exerciseModal');
+        exerciseModal?.addEventListener('shown.bs.modal', () => {
+            this.updateCalculatedVolume();
+        });
     }
 
     private setupTimerListeners(): void {
@@ -104,5 +112,39 @@ export class EventHandlers {
         stopTimerBtn?.addEventListener('click', () => {
             this.workoutController.stopRestTimer();
         });
+    }
+
+    private setupVolumeCalculation(): void {
+        const setsInput: HTMLInputElement | null = document.getElementById('exerciseSets') as HTMLInputElement;
+        const repsInput: HTMLInputElement | null = document.getElementById('exerciseReps') as HTMLInputElement;
+        const weightInput: HTMLInputElement | null = document.getElementById('exerciseWeight') as HTMLInputElement;
+
+        [setsInput, repsInput, weightInput].forEach(input => {
+            input?.addEventListener('input', () => {
+                this.updateCalculatedVolume();
+            });
+        });
+    }
+
+    private updateCalculatedVolume(): void {
+        const setsInput: HTMLInputElement | null = document.getElementById('exerciseSets') as HTMLInputElement;
+        const repsInput: HTMLInputElement | null = document.getElementById('exerciseReps') as HTMLInputElement;
+        const weightInput: HTMLInputElement | null = document.getElementById('exerciseWeight') as HTMLInputElement;
+        const calculatedVolumeElement: HTMLElement | null = document.getElementById('calculatedVolume');
+
+        if (!setsInput || !repsInput || !weightInput || !calculatedVolumeElement) return;
+
+        const sets: number = parseInt(setsInput.value) || 0;
+        const reps: number = parseInt(repsInput.value) || 0;
+        const weight: number = parseFloat(weightInput.value) || 0;
+
+        const volume: number = calculateExerciseVolume(sets, reps, weight);
+        calculatedVolumeElement.textContent = formatVolume(volume);
+
+        // Додаємо анімацію для зміни
+        calculatedVolumeElement.classList.remove('volume-animated');
+        setTimeout(() => {
+            calculatedVolumeElement.classList.add('volume-animated');
+        }, 10);
     }
 }

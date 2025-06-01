@@ -1,3 +1,4 @@
+import { formatVolume } from './utils.js';
 export class WorkoutController {
     constructor(apiService, workoutTimer, restTimer, navigationService, historyController) {
         this.apiService = apiService;
@@ -16,6 +17,7 @@ export class WorkoutController {
         this.workoutTimer.start();
         this.navigationService.navigateTo('workout');
         this.renderExercises();
+        this.updateVolumeDisplay();
         const sessionNameInput = document.getElementById('sessionName');
         if (sessionNameInput) {
             sessionNameInput.value = session.name;
@@ -81,6 +83,7 @@ export class WorkoutController {
                 this.apiService.addExercise(name, sets, reps, weight);
             }
             this.renderExercises();
+            this.updateVolumeDisplay();
             const modal = window.bootstrap.Modal.getInstance(document.getElementById('exerciseModal'));
             if (modal)
                 modal.hide();
@@ -109,14 +112,21 @@ export class WorkoutController {
         session.exercises.forEach((exercise) => {
             const cardElement = document.createElement('div');
             cardElement.className = 'exercise-item p-3 mb-3';
+            const volumeText = exercise.volume ? formatVolume(exercise.volume) : '0 кг';
             cardElement.innerHTML = `
                 <div class="row align-items-center">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <h5 class="mb-1">${exercise.name}</h5>
-                        <div class="d-flex gap-3">
+                        <div class="d-flex gap-3 flex-wrap">
                             <span><i class="fas fa-dumbbell me-1"></i>${exercise.sets} підходи</span>
                             <span><i class="fas fa-repeat me-1"></i>${exercise.reps} повтори</span>
                             <span><i class="fas fa-weight-hanging me-1"></i>${exercise.weight} кг</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <small class="text-muted d-block">Об'єм</small>
+                            <strong class="text-primary">${volumeText}</strong>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -126,7 +136,7 @@ export class WorkoutController {
                             </button>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-ellipsis-v"></i>
@@ -142,6 +152,14 @@ export class WorkoutController {
             exercisesList.appendChild(cardElement);
         });
     }
+    updateVolumeDisplay() {
+        const session = this.apiService.getCurrentSession();
+        const volumeElement = document.getElementById('sessionVolume');
+        if (volumeElement && session) {
+            const totalVolume = session.totalVolume || 0;
+            volumeElement.textContent = formatVolume(totalVolume);
+        }
+    }
     editExercise(exerciseId) {
         const session = this.apiService.getCurrentSession();
         if (session) {
@@ -155,6 +173,7 @@ export class WorkoutController {
         if (confirm('Ви впевнені, що хочете видалити цю вправу?')) {
             this.apiService.removeExercise(exerciseId);
             this.renderExercises();
+            this.updateVolumeDisplay();
         }
     }
     startRestTimer() {

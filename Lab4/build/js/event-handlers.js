@@ -1,3 +1,4 @@
+import { calculateExerciseVolume, formatVolume } from './utils.js';
 export class EventHandlers {
     constructor(navigationService, workoutController, apiService) {
         this.navigationService = navigationService;
@@ -10,6 +11,7 @@ export class EventHandlers {
         this.setupWorkoutPageListeners();
         this.setupModalListeners();
         this.setupTimerListeners();
+        this.setupVolumeCalculation();
     }
     setupNavigationListeners() {
         const homeTabLink = document.getElementById('homeTabLink');
@@ -68,6 +70,10 @@ export class EventHandlers {
         saveExerciseBtn === null || saveExerciseBtn === void 0 ? void 0 : saveExerciseBtn.addEventListener('click', () => {
             this.workoutController.saveExercise();
         });
+        const exerciseModal = document.getElementById('exerciseModal');
+        exerciseModal === null || exerciseModal === void 0 ? void 0 : exerciseModal.addEventListener('shown.bs.modal', () => {
+            this.updateCalculatedVolume();
+        });
     }
     setupTimerListeners() {
         const pauseTimerBtn = document.getElementById('pauseTimerBtn');
@@ -78,5 +84,32 @@ export class EventHandlers {
         stopTimerBtn === null || stopTimerBtn === void 0 ? void 0 : stopTimerBtn.addEventListener('click', () => {
             this.workoutController.stopRestTimer();
         });
+    }
+    setupVolumeCalculation() {
+        const setsInput = document.getElementById('exerciseSets');
+        const repsInput = document.getElementById('exerciseReps');
+        const weightInput = document.getElementById('exerciseWeight');
+        [setsInput, repsInput, weightInput].forEach(input => {
+            input === null || input === void 0 ? void 0 : input.addEventListener('input', () => {
+                this.updateCalculatedVolume();
+            });
+        });
+    }
+    updateCalculatedVolume() {
+        const setsInput = document.getElementById('exerciseSets');
+        const repsInput = document.getElementById('exerciseReps');
+        const weightInput = document.getElementById('exerciseWeight');
+        const calculatedVolumeElement = document.getElementById('calculatedVolume');
+        if (!setsInput || !repsInput || !weightInput || !calculatedVolumeElement)
+            return;
+        const sets = parseInt(setsInput.value) || 0;
+        const reps = parseInt(repsInput.value) || 0;
+        const weight = parseFloat(weightInput.value) || 0;
+        const volume = calculateExerciseVolume(sets, reps, weight);
+        calculatedVolumeElement.textContent = formatVolume(volume);
+        calculatedVolumeElement.classList.remove('volume-animated');
+        setTimeout(() => {
+            calculatedVolumeElement.classList.add('volume-animated');
+        }, 10);
     }
 }

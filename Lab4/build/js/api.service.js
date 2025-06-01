@@ -1,4 +1,4 @@
-import { generateId } from './utils.js';
+import { generateId, calculateExerciseVolume, calculateSessionVolume } from './utils.js';
 export class ApiService {
     constructor() {
         this.workoutSessions = [];
@@ -13,7 +13,8 @@ export class ApiService {
             date: new Date(),
             exercises: [],
             duration: 0,
-            isActive: true
+            isActive: true,
+            totalVolume: 0
         };
         this.currentSession = session;
         return session;
@@ -22,6 +23,7 @@ export class ApiService {
         if (!this.currentSession) {
             throw new Error('No active workout session');
         }
+        const volume = calculateExerciseVolume(sets, reps, weight);
         const newExercise = {
             id: generateId(),
             name: name,
@@ -29,9 +31,11 @@ export class ApiService {
             reps: reps,
             weight: weight,
             record: 0,
-            completed: false
+            completed: false,
+            volume: volume
         };
         this.currentSession.exercises.push(newExercise);
+        this.updateSessionVolume();
         return newExercise;
     }
     updateExercise(exerciseId, name, sets, reps, weight) {
@@ -40,10 +44,13 @@ export class ApiService {
         const exerciseIndex = this.currentSession.exercises.findIndex(ex => ex.id === exerciseId);
         if (exerciseIndex === -1)
             return null;
+        const volume = calculateExerciseVolume(sets, reps, weight);
         this.currentSession.exercises[exerciseIndex].name = name;
         this.currentSession.exercises[exerciseIndex].sets = sets;
         this.currentSession.exercises[exerciseIndex].reps = reps;
         this.currentSession.exercises[exerciseIndex].weight = weight;
+        this.currentSession.exercises[exerciseIndex].volume = volume;
+        this.updateSessionVolume();
         return this.currentSession.exercises[exerciseIndex];
     }
     removeExercise(exerciseId) {
@@ -51,13 +58,18 @@ export class ApiService {
             return false;
         const initialLength = this.currentSession.exercises.length;
         this.currentSession.exercises = this.currentSession.exercises.filter(ex => ex.id !== exerciseId);
-        return this.currentSession.exercises.length < initialLength;
+        if (this.currentSession.exercises.length < initialLength) {
+            this.updateSessionVolume();
+            return true;
+        }
+        return false;
     }
     finishWorkoutSession(duration) {
         if (!this.currentSession)
             return;
         this.currentSession.duration = duration;
         this.currentSession.isActive = false;
+        this.updateSessionVolume();
         this.workoutSessions.push(this.currentSession);
         this.saveToStorage();
         this.currentSession = null;
@@ -73,12 +85,20 @@ export class ApiService {
             this.currentSession.name = name;
         }
     }
+    updateSessionVolume() {
+        if (!this.currentSession)
+            return;
+        this.currentSession.totalVolume = calculateSessionVolume(this.currentSession.exercises);
+    }
     loadFromStorage() {
         try {
             const stored = localStorage.getItem(this.storageKey);
             if (stored) {
                 const parsed = JSON.parse(stored);
-                this.workoutSessions = parsed.map((session) => (Object.assign(Object.assign({}, session), { date: new Date(session.date) })));
+                this.workoutSessions = parsed.map((session) => {
+                    const exercises = session.exercises.map((ex) => (Object.assign(Object.assign({}, ex), { volume: ex.volume || calculateExerciseVolume(ex.sets, ex.reps, ex.weight) })));
+                    return Object.assign(Object.assign({}, session), { date: new Date(session.date), exercises: exercises, totalVolume: session.totalVolume || calculateSessionVolume(exercises) });
+                });
             }
         }
         catch (error) {

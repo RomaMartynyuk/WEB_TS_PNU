@@ -9,6 +9,7 @@ export interface Exercise {
     weight: number;
     record: number;
     completed: boolean;
+    volume?: number; // Додаємо поле для об'єму (sets * reps * weight)
 }
 
 export interface WorkoutSession {
@@ -18,6 +19,7 @@ export interface WorkoutSession {
     exercises: Exercise[];
     duration: number;
     isActive: boolean;
+    totalVolume?: number; // Додаємо загальний об'єм тренування
 }
 
 export type PageType = 'home' | 'workout' | 'history';

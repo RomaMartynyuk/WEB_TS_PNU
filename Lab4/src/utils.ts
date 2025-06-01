@@ -46,3 +46,21 @@ export function formatDate(date: Date): string {
         minute: '2-digit'
     });
 }
+
+// Нові функції для розрахунку об'єму
+export function calculateExerciseVolume(sets: number, reps: number, weight: number): number {
+    return sets * reps * weight;
+}
+
+export function formatVolume(volume: number): string {
+    if (volume >= 1000) {
+        return `${(volume / 1000).toFixed(1)}к кг`;
+    }
+    return `${volume.toFixed(1)} кг`;
+}
+
+export function calculateSessionVolume(exercises: Array<{sets: number, reps: number, weight: number}>): number {
+    return exercises.reduce((total, exercise) => {
+        return total + calculateExerciseVolume(exercise.sets, exercise.reps, exercise.weight);
+    }, 0);
+}
