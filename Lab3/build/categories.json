@@ -1,27 +1,27 @@
 [{
   "id": 1,
-  "full_name": "Фентезі",
+  "full_name": "Рольові ігри",
   "short_name": "fantasy",
   "notes": "",
   "url": "./fantasy.json"
 },
 {
   "id": 2,
-  "full_name": "Детективи",
+  "full_name": "Детективні ігри",
   "short_name": "detectives",
   "notes": "",
   "url": "./detectives.json"
 },
 {
   "id": 3,
-  "full_name": "Фантастика",
+  "full_name": "Наукова фантастика",
   "short_name": "speculative_fiction",
   "notes": "",
   "url": "./speculative_fiction.json"
 },
 {
   "id": 4,
-  "full_name": "Трилери та жахи",
+  "full_name": "Жахи та трилери",
   "short_name": "horrors_trillers",
   "notes": "",
   "url": "./horrors_trillers.json"
