@@ -2,27 +2,38 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: #292929;
-  color: #fff;
+  background-color: #5459AC; /* Новий фоновий колір */
+  color: #B2D8CE; /* Світлий текст */
 }
 
 #button {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
+    background-color: #648DB3; /* Середній синій */
+    color: #B2D8CE;
+    border: 2px solid #B2D8CE;
     border-radius: 5px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
 }
+
 #button:hover {
-    background-color: #45a049;
+    background-color: #B2D8CE;
+    color: #52357B;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
 #timer, #steps {
     text-align: left;
-    position: absolute; 
+    position: absolute;
+    color: #B2D8CE;
+    background-color: rgba(82, 53, 123, 0.8);
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #648DB3;
 }
 
 #timer {
@@ -38,25 +49,27 @@ body {
     height: 90px;
     display: inline-block;
     margin: 2px;
+    border: 1px solid #648DB3;
+    border-radius: 4px;
 }
 
 .black {
-    background-color: black;
+    background-color: #52357B; /* Темний фіолетовий замість чорного */
 }
 
 .white {
-    background-color: white;
+    background-color: #B2D8CE; /* Світлий м'ятний замість білого */
 }
 
 #greeting {
     font-family: 'Arial', sans-serif;
     text-align: center;
-    color: #333; 
-    border: 1px solid #ccc;
+    color: #B2D8CE; 
+    border: 2px solid #648DB3;
     border-radius: 8px; 
     padding: 20px; 
     margin: 20px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    background-color: rgba(82, 53, 123, 0.7);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
     line-height: 1.6;
 }
-

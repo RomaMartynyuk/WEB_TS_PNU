@@ -2,8 +2,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: #292929;
-  color: #fff;
+  background-color: #5459AC; /* Новий фоновий колір */
+  color: #B2D8CE; /* Світлий текст */
 }
 
 .container {
@@ -18,24 +18,29 @@ body {
 .nav-link {
   font-size: 24px; 
   text-align: center; 
-  padding: 0 10px; 
+  padding: 0 10px;
+  color: #B2D8CE !important; /* Світлий колір для навігації */
 }
 
+.nav-link:hover {
+  color: #648DB3 !important; /* Колір при наведенні */
+}
 
 .header {
-  background-color: #222;
+  background-color: #52357B; /* Темний фіолетовий */
   padding: 40px;
   text-align: center;
 }
 
 .header h1 {
   margin: 0;
+  color: #B2D8CE;
 }
 
 .h1 {
   padding: 20px;
+  color: #B2D8CE;
 }
-
 
 .main {
   padding: 20px;
@@ -50,15 +55,23 @@ body {
 .category {
   width: calc(50% - 20px);
   height: 400px;
-  background-color: #333;
+  background-color: #648DB3; /* Середній синій */
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
+  border: 2px solid #52357B;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
+.category:hover {
+  background-color: #52357B;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
 
 .category img {
   max-width: 80%;
@@ -68,15 +81,17 @@ body {
   margin-bottom: 10px;
 }
 
-
 .category h2 {
   margin: 0;
+  color: #B2D8CE;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .footer {
-  background-color: #212529;
+  background-color: #52357B; /* Темний фіолетовий */
   padding: 20px;
   text-align: center;
+  border-top: 3px solid #648DB3;
 }
 
 .footer-content {
@@ -84,25 +99,58 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
 .footer-content img {
   margin-bottom: 10px;
   margin-top: 20px;
 }
 
+.footer-content p {
+  color: #B2D8CE;
+}
+
 .book {
   padding: 20px;
+  width: calc(50% - 20px);
+  height: 600px;
+  background-color: #648DB3; /* Середній синій */
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 2px solid #52357B;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.book:hover {
+  background-color: #52357B;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .book img {
   max-width: 100px;
   height: auto;
   margin-bottom: 10px;
+  border-radius: 4px;
 }
 
 .book h2 {
   margin-top: 0;
+  color: #B2D8CE;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+.book h3 {
+  color: #B2D8CE;
+  text-align: center;
+  font-style: italic;
+  margin: 5px 0;
+}
 
 .book p:last-child {
   margin-bottom: 0;
@@ -112,39 +160,29 @@ body {
   font-style: italic;
   margin: 5px 0;
   text-align: center;
-}
-
-
-.book {
-  width: calc(50% - 20px);
-  height: 600px;
-  background-color: #333;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  color: #B2D8CE;
 }
 
 .buy-button {
   display: inline-block;
-  background-color: #f2f2f2;
-  color: #333;
+  background-color: #B2D8CE; /* Світлий м'ятний */
+  color: #52357B; /* Темний текст на світлій кнопці */
   border: none;
   padding: 8px 16px;
   font-size: 16px;
   cursor: pointer;
   text-decoration: none;
   border-radius: 4px;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  font-weight: bold;
 }
 
 .buy-button:hover {
-  background-color: #e0e0e0;
+  background-color: #648DB3;
+  color: #B2D8CE;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
-
-
 
 .main {
   overflow-x: hidden;
@@ -166,7 +204,10 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Півпрозорий чорний колір */
+  background: linear-gradient(45deg, 
+    rgba(82, 53, 123, 0.7), 
+    rgba(84, 89, 172, 0.7)
+  ); /* Градієнтний оверлей */
 }
 
 .cta {
@@ -179,16 +220,40 @@ body {
 
 .button {
   display: block;
-  background-color: #654321; /* Сірий колір для кнопки */
-  color: #fff;
+  background-color: #648DB3; /* Середній синій */
+  color: #B2D8CE;
   padding: 15px 30px;
   text-decoration: none;
   border-radius: 8px;
   font-size: 24px;
   margin-bottom: 20px;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  border: 2px solid #B2D8CE;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .button:hover {
-  background-color: #543b1c; /* Темніший сірий колір при наведенні на кнопку */
+  background-color: #B2D8CE;
+  color: #52357B;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Додаткові стилі для навігації Bootstrap */
+.navbar {
+  background-color: #52357B !important;
+  border-bottom: 3px solid #648DB3 !important;
+}
+
+.navbar-brand {
+  color: #B2D8CE !important;
+}
+
+.navbar-toggler {
+  border-color: #648DB3 !important;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28178, 216, 206, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
 }
