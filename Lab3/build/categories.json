@@ -1,0 +1,27 @@
+[{
+  "id": 1,
+  "full_name": "Фентезі",
+  "short_name": "fantasy",
+  "notes": "",
+  "url": "./fantasy.json"
+},
+{
+  "id": 2,
+  "full_name": "Детективи",
+  "short_name": "detectives",
+  "notes": "",
+  "url": "./detectives.json"
+},
+{
+  "id": 3,
+  "full_name": "Фантастика",
+  "short_name": "speculative_fiction",
+  "notes": "",
+  "url": "./speculative_fiction.json"
+{
+  "id": 4,
+  "full_name": "Трилери та жахи",
+  "short_name": "horrors_trillers",
+  "notes": "",
+  "url": "./horrors_trillers.json"
+}]
